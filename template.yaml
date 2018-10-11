@@ -1,0 +1,91 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: AWS Data Lifecycle Management Helper
+  
+Globals:
+  Function:
+    Timeout: 5
+
+Resources:
+  # S3 bucket for policy docs to upload to
+  S3Bucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      AccessControl: BucketOwnerFullControl
+      BucketName: !Sub "${AWS::AccountId}-adlm-helper"
+      VersioningConfiguration:
+        Status: Enabled
+      BucketEncryption:
+        ServerSideEncryptionConfiguration:
+        - ServerSideEncryptionByDefault:
+            SSEAlgorithm: AES256
+
+  # DynamoDb table for storing filename-policyId relationship
+  DynamoDBTable:
+    Type: AWS::Serverless::SimpleTable
+    Properties:
+      TableName: adlm-helper # WARNING: not to be changed as it's being used in the lambda function
+      PrimaryKey:
+        Name: s3objectkey
+        Type: String
+      ProvisionedThroughput:
+        ReadCapacityUnits: 1
+        WriteCapacityUnits: 1
+      Tags:
+        AppType: Serverless
+      SSESpecification:
+        SSEEnabled: true
+
+  Function:
+    Description: AWS Data Lifecycle Management Helper
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: build/
+      Handler: adlmhelper
+      Runtime: go1.x
+      Tracing: Active
+      Policies:
+      - AWSLambdaExecute
+      - AWSLambdaDynamoDBExecutionRole
+      - Version: "2012-10-17"
+        Statement:
+        - Effect: Allow
+          Action:
+          - s3:Get*
+          - s3:List*
+          Resource:
+          - !Sub "arn:aws:s3:::${AWS::AccountId}-adlm-helper/*"
+        - Effect: Allow
+          Action:
+          - dynamodb:*
+          Resource:
+          - !GetAtt DynamoDBTable.Arn
+        - Effect: Allow
+          Action:
+          - iam:PassRole
+          Resource: !Sub "arn:aws:iam::${AWS::AccountId}:role/AWSDataLifecycleManagerDefaultRole" # Default AWS managed DLM role, must trust lambda.amazonaws.com
+        - Effect: Allow
+          Action:
+          - dlm:*
+          Resource: "*"
+      Events:
+        PolicyWatch:
+          Type: S3
+          Properties:
+            Bucket: !Ref S3Bucket
+            Events: 
+            - s3:ObjectCreated:*
+            - s3:ObjectRemoved:*
+
+Outputs:
+  FunctionArn:
+    Description: Lambda Function ARN
+    Value: !GetAtt Function.Arn
+
+  S3Arn:
+    Description: S3 bucket ARM
+    Value: !GetAtt S3Bucket.Arn
+
+  DynamDBTableArn:
+    Description: DynamoDB table ARM
+    Value: !GetAtt DynamoDBTable.Arn

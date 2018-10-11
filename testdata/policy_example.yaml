@@ -1,0 +1,21 @@
+---
+Description: My Awesome Data Lifecycl Management Daily Snapshot
+ExecutionRoleArn: arn:aws:iam::123456789101:role/AWSDataLifecycleManagerDefaultRole
+State: ENABLED
+PolicyDetails:
+  ResourceTypes: VOLUME                 # Can only be "VOLUME"
+  TargetTags:                           # Tags to target for snapshot
+  - Key: Name
+    Value: Aweful Stateful Application 
+  Schedules:                            # Can only have one schedule in the list
+  - Name: DailySnapshots
+    CreateRule:
+      Interval: 24                      # The interval. The supported values are 12 and 24
+      IntervalUnit: HOURS               # Can only be "HOURS"
+      Times:
+      - "01:00"                         # The operation occurs within a one-hour window following the specified time
+    RetainRule:
+      Count: 7                          # The number of snapshots to keep for each volume, up to a maximum of 1000
+    TagsToAdd:                          # Tags to add to the snapshot
+    - Key: SnapName
+      Value: Awesome Snapshot 
