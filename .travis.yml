@@ -5,9 +5,10 @@ go:
 
 install:
   - curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
- 
+  - dep ensure
+
 # Override the default command which is "make"
-script: dep ensure
+script: make test 
 
 jobs:
   include:
