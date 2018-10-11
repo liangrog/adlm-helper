@@ -3,3 +3,11 @@ language: go
 go:
   - "1.10.x"
   - master
+
+install:
+  - curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
+
+jobs:
+  include:
+    - stage: test
+      script: make test

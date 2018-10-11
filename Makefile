@@ -22,6 +22,9 @@ build_clean:
 template_clean:
 	rm -rf ${PACKAGE_OUTPUT_TEMPLATE}
 
+test:
+	go test -v ./...
+
 build:
 	GOOS=linux GOARCH=amd64 go build -o ./build/${PACKAGE_NAME} ${PACKAGE_DIR}
 
