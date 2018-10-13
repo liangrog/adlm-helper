@@ -1,0 +1,15 @@
+language: go
+
+# Use container based
+sudo: false
+dist: trusty
+
+go:
+  - "1.11"
+
+install:
+  - curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
+  - dep ensure
+
+script: make test 
+
