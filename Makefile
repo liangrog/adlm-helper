@@ -1,7 +1,10 @@
 # ENV required
 # We also need to have 
+# AWS CLI credential setup
 # AWS_ACCESS_KEY_ID
 # AWS_SECRET_ACCESS_KEY
+#
+# and 
 # S3_BUCKET 
 
 # Vars
