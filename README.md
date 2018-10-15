@@ -1,5 +1,5 @@
-# AWS Data Lifecycle Management Helper
-The purpose of adlm-helper is to ease the EBS snapshot policy management of the new AWS feature [Data Lifecyle Management (DLM)](https://aws.amazon.com/about-aws/whats-new/2018/07/introducing-amazon-data-lifecycle-manager-for-ebs-snapshots/) overhead. It allows one to focus managing the policies rather than the execution. 
+# AWS Data Lifecycle Manager Helper
+The purpose of adlm-helper is to ease the EBS snapshot policy management of the new AWS feature [Data Lifecyle Manager (DLM)](https://aws.amazon.com/about-aws/whats-new/2018/07/introducing-amazon-data-lifecycle-manager-for-ebs-snapshots/) overhead. It allows one to focus managing the policies rather than the execution. 
 
 The policies are to written in the yaml format (so comments are allowed) not the original DLM json format. However the text structure is following the original json. You can easily generate the yaml file if you have already gotten the policies written in json via online tools like [this](https://www.json2yaml.com/).
 
