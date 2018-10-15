@@ -16,12 +16,28 @@ The deployment of the package is via AWS [SAM](https://docs.aws.amazon.com/serve
 You must have below tools installed:
 
 1. [AWS Cli](https://docs.aws.amazon.com/cli/latest/userguide/installing.html) (Version must be highter than 1.16.26)
+<b>Note:</b> If you want to use a different AWS credential other than the default, you will be either required environment variable`AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY` or `AWS_PROFILE`.
+
 2. [AWS Sam Cli](https://docs.aws.amazon.com/lambda/latest/dg/sam-cli-requirements.html)
+
 3. Clone this repo
+
 4. Environment variable `S3_BUCKET` points to the bucket your lambda package will be uploaded to
 
+5. Default AWS DLM role created and lambda add to trusted entities
+```
+# Create the default dlm role. the role name will be similar to arn:aws:iam::123456789012:role/AWSDataLifecycleManagerDefaultRole
+$ aws dlm create-default-role
 
-<b>Note:</b> If you want to use a different AWS credential other than the default, you will be either required environment variable`AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY` or `AWS_PROFILE`.
+# Add below to existing role trust policy
+      {
+         "Effect": "Allow",
+         "Principal": {
+            "Service": "lambda.amazonaws.com"
+         },
+         "Action": "sts:AssumeRole"
+      }
+```
 
 ### Option 1
 This option is for user who has [Go](https://golang.org/doc/install) environment setup and [Dep](https://github.com/golang/dep) installed.
